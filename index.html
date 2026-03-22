@@ -36,23 +36,23 @@
   }
   .logo { width: 32px; height: 32px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
   header h1 { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.04em; }
-  header .sub { font-size: 10px; color: var(--ice); opacity: 0.65; letter-spacing: 0.06em; }
+  header .sub { font-size: 10px; color: #fff; letter-spacing: 0.06em; }
   .spacer { flex: 1; }
-  #clock { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ice); opacity: 0.75; }
+  #clock { font-family: 'DM Mono', monospace; font-size: 13px; color: #fff; }
 
   .wrap { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
 
   /* PANELS */
   .panel { background: var(--card); border-radius: 16px; border: 1.5px solid var(--border); box-shadow: 0 4px 24px rgba(15,31,69,0.07); overflow: hidden; margin-bottom: 20px; }
   .panel-head { background: var(--navy2); padding: 13px 22px; display: flex; align-items: center; gap: 10px; }
-  .panel-head .title { font-size: 13px; font-weight: 700; color: var(--ice); letter-spacing: 0.05em; }
+  .panel-head .title { font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 0.05em; }
   .panel-head .badge { background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px; }
   .panel-body { padding: 18px 22px; }
 
   /* NAME INPUTS */
   .name-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .name-item { display: flex; flex-direction: column; gap: 4px; }
-  .name-item label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; }
+  .name-item label { font-size: 11px; font-weight: 700; color: #333; letter-spacing: 0.06em; }
   .name-item input[type=text] {
     width: 130px; padding: 7px 10px;
     font-family: 'Noto Sans JP', sans-serif; font-size: 12px;
@@ -64,7 +64,7 @@
 
   /* INPUT TABLE */
   .input-table { width: 100%; border-collapse: collapse; }
-  .input-table th { background: var(--navy); color: var(--ice); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 10px 12px; text-align: center; }
+  .input-table th { background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; padding: 10px 12px; text-align: center; }
   .input-table th:first-child { text-align: left; }
   .input-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; text-align: center; }
   .input-table tr:last-child td { border-bottom: none; }
@@ -85,15 +85,15 @@
   button { font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 13px; border: none; cursor: pointer; border-radius: 8px; padding: 10px 22px; transition: all 0.15s; letter-spacing: 0.03em; }
   #calcBtn { background: var(--blue); color: #fff; box-shadow: 0 3px 12px rgba(34,81,204,0.3); }
   #calcBtn:hover { background: var(--accent); transform: translateY(-1px); }
-  #resetBtn { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
+  #resetBtn { background: transparent; color: #333; border: 1.5px solid #aaa; }
   #resetBtn:hover { border-color: var(--muted); color: var(--text); }
 
   /* RESULT */
   #result { display: none; animation: fadeUp 0.35s ease; }
   @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
 
-  .ts-bar { background: var(--navy); color: var(--ice); border-radius: 10px; padding: 10px 18px; font-size: 12px; font-family: 'DM Mono', monospace; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
-  .ts-bar strong { color: #fff; font-size: 14px; }
+  .ts-bar { background: var(--navy); color: #fff; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-family: 'DM Mono', monospace; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+  .ts-bar strong { color: #fff; font-size: 15px; }
 
   /* TOTAL BOX */
   .total-box {
@@ -101,26 +101,27 @@
     padding: 22px 26px; margin-bottom: 24px;
     box-shadow: 0 6px 28px rgba(15,31,69,0.22);
   }
-  .tc-lbl { font-size: 10px; font-weight: 700; color: var(--ice); opacity: 0.55; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 16px; }
+  .tc-lbl { font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 16px; }
   .tot-counts { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; margin-bottom: 16px; }
-  .tot-num { text-align: center; padding: 0 12px; border-right: 1px solid rgba(255,255,255,0.1); }
+  .tot-num { text-align: center; padding: 0 12px; border-right: 1px solid rgba(255,255,255,0.2); }
   .tot-num:last-child { border-right: none; }
   .tot-v { font-family: 'DM Mono', monospace; font-size: 36px; font-weight: 700; color: #fff; line-height: 1; }
-  .tot-u { font-size: 13px; color: var(--ice); opacity: 0.5; margin-left: 3px; }
-  .tot-l { font-size: 11px; color: var(--ice); opacity: 0.45; margin-top: 5px; }
+  .tot-u { font-size: 13px; color: #fff; margin-left: 3px; }
+  .tot-l { font-size: 12px; color: #fff; margin-top: 5px; }
 
   .tot-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 0 0 16px; }
   .tot-rates { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
-  .rate-chip { background: rgba(255,255,255,0.07); border-radius: 8px; padding: 12px 14px; }
-  .rate-chip .rl { font-size: 10px; color: var(--ice); opacity: 0.5; margin-bottom: 4px; }
+  .rate-chip { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 14px; }
+  .rate-chip .rl { font-size: 11px; color: #fff; margin-bottom: 4px; }
   .rate-chip .rv { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 700; }
   .rv.ok   { color: var(--green); }
   .rv.warn { color: var(--yellow); }
   .rv.bad  { color: var(--red); }
   .rv.neu  { color: var(--accent); }
+  .rv.blue { color: #38bdf8; }
 
   /* STAFF CARDS */
-  .sec-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+  .sec-label { font-size: 11px; font-weight: 700; color: #333; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
   .staff-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 24px; }
   @media (max-width: 720px) { .staff-grid { grid-template-columns: repeat(2,1fr); } }
 
@@ -141,7 +142,7 @@
     padding: 8px 12px;
     display: flex; align-items: center; justify-content: space-between;
   }
-  .s-name { font-size: 12px; font-weight: 700; }
+  .s-name { font-size: 12px; font-weight: 700; color: #fff; }
   .badge-row { display: flex; gap: 4px; }
   .rank-badge {
     font-size: 14px; line-height: 1;
@@ -149,7 +150,7 @@
 
   .s-body { padding: 11px 13px; display: flex; flex-direction: column; gap: 6px; }
   .s-row { display: flex; justify-content: space-between; align-items: center; }
-  .s-lbl { font-size: 10px; color: var(--muted); }
+  .s-lbl { font-size: 11px; color: #444; }
   .s-val { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 700; }
   .s-rate { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; }
   .s-div { height: 1px; background: var(--border); margin: 2px 0; }
@@ -157,21 +158,22 @@
   .s-rate.warn { color: var(--yellow); }
   .s-rate.bad  { color: var(--red); }
   .s-rate.neu  { color: var(--blue); }
+  .s-rate.blue { color: #0ea5e9; }
 
   /* RANKING SECTION */
   .ranking-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
   @media (max-width: 600px) { .ranking-wrap { grid-template-columns: 1fr; } }
   .rank-box { background: var(--card); border-radius: 13px; border: 1.5px solid var(--border); overflow: hidden; box-shadow: 0 2px 12px rgba(15,31,69,0.06); }
-  .rank-head { background: var(--navy2); padding: 11px 18px; font-size: 12px; font-weight: 700; color: var(--ice); letter-spacing: 0.04em; }
+  .rank-head { background: var(--navy2); padding: 11px 18px; font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 0.04em; }
   .rank-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
   .rank-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; background: var(--bg); }
-  .rank-item.r1 { background: linear-gradient(90deg, rgba(255,215,0,0.12), rgba(255,215,0,0.04)); border: 1px solid rgba(255,215,0,0.3); }
-  .rank-item.r2 { background: linear-gradient(90deg, rgba(192,192,192,0.12), rgba(192,192,192,0.04)); border: 1px solid rgba(192,192,192,0.3); }
-  .rank-item.r3 { background: linear-gradient(90deg, rgba(205,127,50,0.12), rgba(205,127,50,0.04)); border: 1px solid rgba(205,127,50,0.3); }
+  .rank-item.r1 { background: linear-gradient(90deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05)); border: 1px solid rgba(255,215,0,0.4); }
+  .rank-item.r2 { background: linear-gradient(90deg, rgba(192,192,192,0.15), rgba(192,192,192,0.05)); border: 1px solid rgba(192,192,192,0.4); }
+  .rank-item.r3 { background: linear-gradient(90deg, rgba(205,127,50,0.15), rgba(205,127,50,0.05)); border: 1px solid rgba(205,127,50,0.4); }
   .rank-medal { font-size: 20px; width: 28px; text-align: center; }
-  .rank-name { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; }
-  .rank-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 700; color: var(--navy); }
-  .rank-unit { font-size: 11px; color: var(--muted); margin-left: 2px; }
+  .rank-name { font-size: 13px; font-weight: 700; color: #111; flex: 1; }
+  .rank-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 700; color: #111; }
+  .rank-unit { font-size: 12px; color: #444; margin-left: 2px; }
 
   /* COPY */
   .copy-row { display: flex; justify-content: flex-end; }
@@ -314,9 +316,31 @@
   }
 
   function pct(a,b){ return(!b||b===0)?null:(a/b*100).toFixed(1); }
-  function rateColor(v,good,warn){
+
+  // 指標ごとに色クラスを返す
+  function rateColorJuchu(v){
     if(v===null) return 'neu';
-    return parseFloat(v)>=good?'ok':parseFloat(v)>=warn?'warn':'bad';
+    const n=parseFloat(v);
+    if(n>=10)  return 'blue';
+    if(n>=5)   return 'ok';
+    if(n>=3)   return 'warn';
+    return 'bad';
+  }
+  function rateColorZen(v){
+    if(v===null) return 'neu';
+    const n=parseFloat(v);
+    if(n>=90)  return 'blue';
+    if(n>=60)  return 'ok';
+    if(n>=40)  return 'warn';
+    return 'bad';
+  }
+  function rateColorYZ(v){
+    if(v===null) return 'neu';
+    const n=parseFloat(v);
+    if(n>=4)   return 'blue';
+    if(n>=2.5) return 'ok';
+    if(n>=1.5) return 'warn';
+    return 'bad';
   }
 
   document.getElementById('calcBtn').addEventListener('click',()=>{
@@ -347,15 +371,15 @@
     document.getElementById('totRates').innerHTML=`
       <div class="rate-chip">
         <div class="rl">有効受注率（受注する力）</div>
-        <div class="rv ${rateColor(jrT,3.8,2.5)}">${jrT??'─'}<span style="font-size:13px;opacity:.6">%</span></div>
+        <div class="rv ${rateColorJuchu(jrT)}">${jrT??'─'}<span style="font-size:13px;opacity:.8">%</span></div>
       </div>
       <div class="rate-chip">
         <div class="rl">前確OK率</div>
-        <div class="rv ${rateColor(zrT,64.1,45)}">${zrT??'─'}<span style="font-size:13px;opacity:.6">%</span></div>
+        <div class="rv ${rateColorZen(zrT)}">${zrT??'─'}<span style="font-size:13px;opacity:.8">%</span></div>
       </div>
       <div class="rate-chip">
         <div class="rl">対有効前確OK率</div>
-        <div class="rv ${rateColor(yzT,1.6,1.0)}">${yzT??'─'}<span style="font-size:13px;opacity:.6">%</span></div>
+        <div class="rv ${rateColorYZ(yzT)}">${yzT??'─'}<span style="font-size:13px;opacity:.8">%</span></div>
       </div>`;
 
     // ランキング計算
@@ -408,9 +432,9 @@
             <div class="s-row"><span class="s-lbl">受注数</span><span class="s-val">${s.juchu}</span></div>
             <div class="s-row"><span class="s-lbl">前確OK</span><span class="s-val">${s.zen}</span></div>
             <div class="s-div"></div>
-            <div class="s-row"><span class="s-lbl">有効受注率</span><span class="s-rate ${rateColor(jr,3.8,2.5)}">${jr?jr+'%':'─'}</span></div>
-            <div class="s-row"><span class="s-lbl">前確OK率</span><span class="s-rate ${rateColor(zr,64.1,45)}">${zr?zr+'%':'─'}</span></div>
-            <div class="s-row"><span class="s-lbl">対有効前確OK率</span><span class="s-rate ${rateColor(yz,1.6,1.0)}">${yz?yz+'%':'─'}</span></div>
+            <div class="s-row"><span class="s-lbl">有効受注率</span><span class="s-rate ${rateColorJuchu(jr)}">${jr?jr+'%':'─'}</span></div>
+            <div class="s-row"><span class="s-lbl">前確OK率</span><span class="s-rate ${rateColorZen(zr)}">${zr?zr+'%':'─'}</span></div>
+            <div class="s-row"><span class="s-lbl">対有効前確OK率</span><span class="s-rate ${rateColorYZ(yz)}">${yz?yz+'%':'─'}</span></div>
           </div>
         </div>`;
     }).join('');
