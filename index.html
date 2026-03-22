@@ -316,8 +316,6 @@
   }
 
   function pct(a,b){ return(!b||b===0)?null:(a/b*100).toFixed(1); }
-
-  // 指標ごとに色クラスを返す
   function rateColorJuchu(v){
     if(v===null) return 'neu';
     const n=parseFloat(v);
