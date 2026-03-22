@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中間報告 集計ツール</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:   #0f1f45;
+    --navy2:  #1a2f5e;
+    --blue:   #2251cc;
+    --accent: #4f8aff;
+    --ice:    #c8d8ff;
+    --green:  #0db37f;
+    --red:    #e8394a;
+    --yellow: #f5a623;
+    --bg:     #eef2fb;
+    --card:   #ffffff;
+    --text:   #0f1f45;
+    --muted:  #6b7a9e;
+    --border: #dde3f5;
+    --gold:   #FFD700;
+    --silver: #C0C0C0;
+    --bronze: #CD7F32;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  header {
+    background: var(--navy); padding: 14px 28px;
+    display: flex; align-items: center; gap: 12px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  }
+  .logo { width: 32px; height: 32px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  header h1 { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.04em; }
+  header .sub { font-size: 10px; color: var(--ice); opacity: 0.65; letter-spacing: 0.06em; }
+  .spacer { flex: 1; }
+  #clock { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--ice); opacity: 0.75; }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
+
+  /* PANELS */
+  .panel { background: var(--card); border-radius: 16px; border: 1.5px solid var(--border); box-shadow: 0 4px 24px rgba(15,31,69,0.07); overflow: hidden; margin-bottom: 20px; }
+  .panel-head { background: var(--navy2); padding: 13px 22px; display: flex; align-items: center; gap: 10px; }
+  .panel-head .title { font-size: 13px; font-weight: 700; color: var(--ice); letter-spacing: 0.05em; }
+  .panel-head .badge { background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px; }
+  .panel-body { padding: 18px 22px; }
+
+  /* NAME INPUTS */
+  .name-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .name-item { display: flex; flex-direction: column; gap: 4px; }
+  .name-item label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; }
+  .name-item input[type=text] {
+    width: 130px; padding: 7px 10px;
+    font-family: 'Noto Sans JP', sans-serif; font-size: 12px;
+    border: 1.5px solid var(--border); border-radius: 7px;
+    background: var(--bg); color: var(--text); outline: none;
+    transition: border-color 0.2s;
+  }
+  .name-item input[type=text]:focus { border-color: var(--accent); background: #fff; }
+
+  /* INPUT TABLE */
+  .input-table { width: 100%; border-collapse: collapse; }
+  .input-table th { background: var(--navy); color: var(--ice); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 10px 12px; text-align: center; }
+  .input-table th:first-child { text-align: left; }
+  .input-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; text-align: center; }
+  .input-table tr:last-child td { border-bottom: none; }
+  .input-table tr:nth-child(even) td { background: #f6f8ff; }
+  .staff-label { font-size: 13px; font-weight: 700; color: var(--navy2); white-space: nowrap; }
+  .num-input {
+    width: 80px; padding: 7px 10px;
+    font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700;
+    text-align: center; color: var(--navy);
+    border: 1.5px solid var(--border); border-radius: 7px;
+    background: #fff; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .num-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,138,255,0.15); }
+  .num-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 18px; }
+  button { font-family: 'Noto Sans JP', sans-serif; font-weight: 700; font-size: 13px; border: none; cursor: pointer; border-radius: 8px; padding: 10px 22px; transition: all 0.15s; letter-spacing: 0.03em; }
+  #calcBtn { background: var(--blue); color: #fff; box-shadow: 0 3px 12px rgba(34,81,204,0.3); }
+  #calcBtn:hover { background: var(--accent); transform: translateY(-1px); }
+  #resetBtn { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
+  #resetBtn:hover { border-color: var(--muted); color: var(--text); }
+
+  /* RESULT */
+  #result { display: none; animation: fadeUp 0.35s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+  .ts-bar { background: var(--navy); color: var(--ice); border-radius: 10px; padding: 10px 18px; font-size: 12px; font-family: 'DM Mono', monospace; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+  .ts-bar strong { color: #fff; font-size: 14px; }
+
+  /* TOTAL BOX */
+  .total-box {
+    background: var(--navy); border-radius: 14px;
+    padding: 22px 26px; margin-bottom: 24px;
+    box-shadow: 0 6px 28px rgba(15,31,69,0.22);
+  }
+  .tc-lbl { font-size: 10px; font-weight: 700; color: var(--ice); opacity: 0.55; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 16px; }
+  .tot-counts { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; margin-bottom: 16px; }
+  .tot-num { text-align: center; padding: 0 12px; border-right: 1px solid rgba(255,255,255,0.1); }
+  .tot-num:last-child { border-right: none; }
+  .tot-v { font-family: 'DM Mono', monospace; font-size: 36px; font-weight: 700; color: #fff; line-height: 1; }
+  .tot-u { font-size: 13px; color: var(--ice); opacity: 0.5; margin-left: 3px; }
+  .tot-l { font-size: 11px; color: var(--ice); opacity: 0.45; margin-top: 5px; }
+
+  .tot-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 0 0 16px; }
+  .tot-rates { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+  .rate-chip { background: rgba(255,255,255,0.07); border-radius: 8px; padding: 12px 14px; }
+  .rate-chip .rl { font-size: 10px; color: var(--ice); opacity: 0.5; margin-bottom: 4px; }
+  .rate-chip .rv { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 700; }
+  .rv.ok   { color: var(--green); }
+  .rv.warn { color: var(--yellow); }
+  .rv.bad  { color: var(--red); }
+  .rv.neu  { color: var(--accent); }
+
+  /* STAFF CARDS */
+  .sec-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+  .staff-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 24px; }
+  @media (max-width: 720px) { .staff-grid { grid-template-columns: repeat(2,1fr); } }
+
+  .s-card {
+    background: var(--card); border-radius: 12px;
+    border: 1.5px solid var(--border);
+    overflow: hidden; position: relative;
+    box-shadow: 0 2px 12px rgba(15,31,69,0.07);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .s-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(15,31,69,0.12); }
+  .s-card.rank-1 { border-color: var(--gold); box-shadow: 0 2px 16px rgba(255,215,0,0.25); }
+  .s-card.rank-2 { border-color: var(--silver); }
+  .s-card.rank-3 { border-color: var(--bronze); }
+
+  .s-head {
+    background: var(--navy2); color: var(--ice);
+    padding: 8px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .s-name { font-size: 12px; font-weight: 700; }
+  .badge-row { display: flex; gap: 4px; }
+  .rank-badge {
+    font-size: 14px; line-height: 1;
+  }
+
+  .s-body { padding: 11px 13px; display: flex; flex-direction: column; gap: 6px; }
+  .s-row { display: flex; justify-content: space-between; align-items: center; }
+  .s-lbl { font-size: 10px; color: var(--muted); }
+  .s-val { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 700; }
+  .s-rate { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; }
+  .s-div { height: 1px; background: var(--border); margin: 2px 0; }
+  .s-rate.ok   { color: var(--green); }
+  .s-rate.warn { color: var(--yellow); }
+  .s-rate.bad  { color: var(--red); }
+  .s-rate.neu  { color: var(--blue); }
+
+  /* RANKING SECTION */
+  .ranking-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+  @media (max-width: 600px) { .ranking-wrap { grid-template-columns: 1fr; } }
+  .rank-box { background: var(--card); border-radius: 13px; border: 1.5px solid var(--border); overflow: hidden; box-shadow: 0 2px 12px rgba(15,31,69,0.06); }
+  .rank-head { background: var(--navy2); padding: 11px 18px; font-size: 12px; font-weight: 700; color: var(--ice); letter-spacing: 0.04em; }
+  .rank-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .rank-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; background: var(--bg); }
+  .rank-item.r1 { background: linear-gradient(90deg, rgba(255,215,0,0.12), rgba(255,215,0,0.04)); border: 1px solid rgba(255,215,0,0.3); }
+  .rank-item.r2 { background: linear-gradient(90deg, rgba(192,192,192,0.12), rgba(192,192,192,0.04)); border: 1px solid rgba(192,192,192,0.3); }
+  .rank-item.r3 { background: linear-gradient(90deg, rgba(205,127,50,0.12), rgba(205,127,50,0.04)); border: 1px solid rgba(205,127,50,0.3); }
+  .rank-medal { font-size: 20px; width: 28px; text-align: center; }
+  .rank-name { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; }
+  .rank-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 700; color: var(--navy); }
+  .rank-unit { font-size: 11px; color: var(--muted); margin-left: 2px; }
+
+  /* COPY */
+  .copy-row { display: flex; justify-content: flex-end; }
+  #copyBtn { background: var(--green); color: #fff; font-size: 12px; padding: 10px 20px; box-shadow: 0 3px 10px rgba(13,179,127,0.3); }
+  #copyBtn:hover { opacity: 0.88; transform: translateY(-1px); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">📊</div>
+  <div>
+    <div class="sub">PREDICTIVE CALL</div>
+    <h1>中間報告 集計ツール</h1>
+  </div>
+  <div class="spacer"></div>
+  <div id="clock"></div>
+</header>
+
+<div class="wrap">
+
+  <!-- スタッフ名設定 -->
+  <div class="panel">
+    <div class="panel-head">
+      <span class="title">スタッフ名の設定</span>
+      <span class="badge">初回のみ</span>
+    </div>
+    <div class="panel-body">
+      <div class="name-row" id="nameRow"></div>
+    </div>
+  </div>
+
+  <!-- 実績入力 -->
+  <div class="panel">
+    <div class="panel-head">
+      <span class="title">実績入力</span>
+      <span class="badge">LINEの報告をそのまま入力</span>
+    </div>
+    <div class="panel-body">
+      <table class="input-table">
+        <thead>
+          <tr>
+            <th style="text-align:left">スタッフ</th>
+            <th>有効数</th>
+            <th>受注数</th>
+            <th>前確OK</th>
+          </tr>
+        </thead>
+        <tbody id="inputBody"></tbody>
+      </table>
+      <div class="btn-row">
+        <button id="calcBtn">▶ 集計する</button>
+        <button id="resetBtn">クリア</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結果 -->
+  <div id="result">
+
+    <div class="ts-bar">
+      <span>⏱</span>
+      <span>集計時刻：<strong id="resTime"></strong></span>
+      <span style="opacity:.4; margin-left:8px;">中間報告</span>
+    </div>
+
+    <!-- 全体集計（大きめ・先頭） -->
+    <div class="total-box">
+      <div class="tc-lbl">全体集計</div>
+      <div class="tot-counts" id="totCounts"></div>
+      <div class="tot-divider"></div>
+      <div class="tot-rates" id="totRates"></div>
+    </div>
+
+    <!-- ランキング -->
+    <div class="sec-label">競争ランキング</div>
+    <div class="ranking-wrap">
+      <div class="rank-box">
+        <div class="rank-head">🏆 有効受注率ランキング（受注する力）</div>
+        <div class="rank-list" id="rankRate"></div>
+      </div>
+      <div class="rank-box">
+        <div class="rank-head">🏆 前確OK数ランキング</div>
+        <div class="rank-list" id="rankZen"></div>
+      </div>
+    </div>
+
+    <!-- スタッフ別 -->
+    <div class="sec-label">スタッフ別実績</div>
+    <div class="staff-grid" id="staffCards"></div>
+
+    <div class="copy-row">
+      <button id="copyBtn">📋 LINE用テキストをコピー</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const STAFF_COUNT = 5;
+  const DEFAULT_NAMES = ['スタッフA','スタッフB','スタッフC','スタッフD','スタッフE'];
+  const MEDALS = ['🥇','🥈','🥉','4位','5位'];
+  const MEDAL_CLASSES = ['r1','r2','r3','',''];
+
+  // 時計
+  setInterval(()=>{
+    const n=new Date();
+    document.getElementById('clock').textContent=
+      [n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');
+  },1000);
+
+  // スタッフ名欄
+  const nameRow = document.getElementById('nameRow');
+  for(let i=0;i<STAFF_COUNT;i++){
+    nameRow.innerHTML+=`
+      <div class="name-item">
+        <label>スタッフ ${i+1}</label>
+        <input type="text" id="name${i}" placeholder="${DEFAULT_NAMES[i]}" maxlength="10" oninput="syncLabel(${i})">
+      </div>`;
+  }
+  function syncLabel(i){
+    const v=document.getElementById(`name${i}`).value.trim()||DEFAULT_NAMES[i];
+    const el=document.getElementById(`slbl${i}`);
+    if(el) el.textContent=v;
+  }
+  function getNames(){
+    return Array.from({length:STAFF_COUNT},(_,i)=>document.getElementById(`name${i}`).value.trim()||DEFAULT_NAMES[i]);
+  }
+
+  // 入力テーブル
+  const inputBody=document.getElementById('inputBody');
+  for(let i=0;i<STAFF_COUNT;i++){
+    inputBody.innerHTML+=`
+      <tr>
+        <td style="text-align:left"><span class="staff-label" id="slbl${i}">${DEFAULT_NAMES[i]}</span></td>
+        <td><input class="num-input" type="number" id="yuko${i}" min="0" placeholder="0"></td>
+        <td><input class="num-input" type="number" id="juchu${i}" min="0" placeholder="0"></td>
+        <td><input class="num-input" type="number" id="zen${i}" min="0" placeholder="0"></td>
+      </tr>`;
+  }
+
+  function pct(a,b){ return(!b||b===0)?null:(a/b*100).toFixed(1); }
+  function rateColor(v,good,warn){
+    if(v===null) return 'neu';
+    return parseFloat(v)>=good?'ok':parseFloat(v)>=warn?'warn':'bad';
+  }
+
+  document.getElementById('calcBtn').addEventListener('click',()=>{
+    const names=getNames();
+    const data=Array.from({length:STAFF_COUNT},(_,i)=>({
+      name:  names[i],
+      yuko:  parseInt(document.getElementById(`yuko${i}`).value)||0,
+      juchu: parseInt(document.getElementById(`juchu${i}`).value)||0,
+      zen:   parseInt(document.getElementById(`zen${i}`).value)||0,
+    }));
+
+    // 時刻
+    const now=new Date();
+    document.getElementById('resTime').textContent=
+      `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+    // 全体集計
+    const totY=data.reduce((s,x)=>s+x.yuko,0);
+    const totJ=data.reduce((s,x)=>s+x.juchu,0);
+    const totZ=data.reduce((s,x)=>s+x.zen,0);
+    const jrT=pct(totJ,totY), zrT=pct(totZ,totJ), yzT=pct(totZ,totY);
+
+    document.getElementById('totCounts').innerHTML=`
+      <div class="tot-num"><div><span class="tot-v">${totY}</span><span class="tot-u">件</span></div><div class="tot-l">総有効数</div></div>
+      <div class="tot-num"><div><span class="tot-v">${totJ}</span><span class="tot-u">件</span></div><div class="tot-l">総受注数</div></div>
+      <div class="tot-num"><div><span class="tot-v">${totZ}</span><span class="tot-u">件</span></div><div class="tot-l">総前確OK数</div></div>`;
+
+    document.getElementById('totRates').innerHTML=`
+      <div class="rate-chip">
+        <div class="rl">有効受注率（受注する力）</div>
+        <div class="rv ${rateColor(jrT,3.8,2.5)}">${jrT??'─'}<span style="font-size:13px;opacity:.6">%</span></div>
+      </div>
+      <div class="rate-chip">
+        <div class="rl">前確OK率</div>
+        <div class="rv ${rateColor(zrT,64.1,45)}">${zrT??'─'}<span style="font-size:13px;opacity:.6">%</span></div>
+      </div>
+      <div class="rate-chip">
+        <div class="rl">対有効前確OK率</div>
+        <div class="rv ${rateColor(yzT,1.6,1.0)}">${yzT??'─'}<span style="font-size:13px;opacity:.6">%</span></div>
+      </div>`;
+
+    // ランキング計算
+    const rateRanking=[...data]
+      .map(s=>({...s, jr:parseFloat(pct(s.juchu,s.yuko))||0}))
+      .sort((a,b)=>b.jr-a.jr);
+    const zenRanking=[...data].sort((a,b)=>b.zen-a.zen);
+
+    // 有効受注率ランキング
+    document.getElementById('rankRate').innerHTML=rateRanking.map((s,i)=>`
+      <div class="rank-item ${MEDAL_CLASSES[i]||''}">
+        <div class="rank-medal">${MEDALS[i]}</div>
+        <div class="rank-name">${s.name}</div>
+        <div><span class="rank-val">${s.jr.toFixed(1)}</span><span class="rank-unit">%</span></div>
+      </div>`).join('');
+
+    // 前確OK数ランキング
+    document.getElementById('rankZen').innerHTML=zenRanking.map((s,i)=>`
+      <div class="rank-item ${MEDAL_CLASSES[i]||''}">
+        <div class="rank-medal">${MEDALS[i]}</div>
+        <div class="rank-name">${s.name}</div>
+        <div><span class="rank-val">${s.zen}</span><span class="rank-unit">件</span></div>
+      </div>`).join('');
+
+    // 有効受注率の順位マップ
+    const rateRankMap={};
+    rateRanking.forEach((s,i)=>rateRankMap[s.name]=i);
+    const zenRankMap={};
+    zenRanking.forEach((s,i)=>zenRankMap[s.name]=i);
+
+    // スタッフカード
+    document.getElementById('staffCards').innerHTML=data.map(s=>{
+      const jr=pct(s.juchu,s.yuko);
+      const zr=pct(s.zen,s.juchu);
+      const yz=pct(s.zen,s.yuko);
+      const rr=rateRankMap[s.name]; // 有効受注率順位
+      const zr2=zenRankMap[s.name]; // 前確OK順位
+      const rankClass=rr===0?'rank-1':rr===1?'rank-2':rr===2?'rank-3':'';
+      const badges=[];
+      if(rr<=2) badges.push(`<span class="rank-badge" title="有効受注率${MEDALS[rr]}">${MEDALS[rr]}</span>`);
+      if(zr2<=2) badges.push(`<span class="rank-badge" title="前確OK${MEDALS[zr2]}">${MEDALS[zr2]}</span>`);
+      return `
+        <div class="s-card ${rankClass}">
+          <div class="s-head">
+            <span class="s-name">${s.name}</span>
+            <div class="badge-row">${badges.join('')}</div>
+          </div>
+          <div class="s-body">
+            <div class="s-row"><span class="s-lbl">有効数</span><span class="s-val">${s.yuko}</span></div>
+            <div class="s-row"><span class="s-lbl">受注数</span><span class="s-val">${s.juchu}</span></div>
+            <div class="s-row"><span class="s-lbl">前確OK</span><span class="s-val">${s.zen}</span></div>
+            <div class="s-div"></div>
+            <div class="s-row"><span class="s-lbl">有効受注率</span><span class="s-rate ${rateColor(jr,3.8,2.5)}">${jr?jr+'%':'─'}</span></div>
+            <div class="s-row"><span class="s-lbl">前確OK率</span><span class="s-rate ${rateColor(zr,64.1,45)}">${zr?zr+'%':'─'}</span></div>
+            <div class="s-row"><span class="s-lbl">対有効前確OK率</span><span class="s-rate ${rateColor(yz,1.6,1.0)}">${yz?yz+'%':'─'}</span></div>
+          </div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('result').style.display='block';
+    document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+
+  document.getElementById('resetBtn').addEventListener('click',()=>{
+    for(let i=0;i<STAFF_COUNT;i++)
+      ['yuko','juchu','zen'].forEach(k=>document.getElementById(`${k}${i}`).value='');
+    document.getElementById('result').style.display='none';
+  });
+
+  // LINE用テキストコピー
+  document.getElementById('copyBtn').addEventListener('click',()=>{
+    const names=getNames();
+    const data=Array.from({length:STAFF_COUNT},(_,i)=>({
+      name:  names[i],
+      yuko:  parseInt(document.getElementById(`yuko${i}`).value)||0,
+      juchu: parseInt(document.getElementById(`juchu${i}`).value)||0,
+      zen:   parseInt(document.getElementById(`zen${i}`).value)||0,
+    }));
+    const now=new Date();
+    const t=`${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const totY=data.reduce((s,x)=>s+x.yuko,0);
+    const totJ=data.reduce((s,x)=>s+x.juchu,0);
+    const totZ=data.reduce((s,x)=>s+x.zen,0);
+    const jrT=pct(totJ,totY), yzT=pct(totZ,totY);
+
+    const rateRanking=[...data]
+      .map(s=>({...s,jr:parseFloat(pct(s.juchu,s.yuko))||0}))
+      .sort((a,b)=>b.jr-a.jr);
+    const zenRanking=[...data].sort((a,b)=>b.zen-a.zen);
+
+    let txt=`【中間報告】${t}\n${'─'.repeat(24)}\n`;
+    txt+=`【全体】有効:${totY} 受注:${totJ} 前確:${totZ}\n`;
+    txt+=`有効受注率:${jrT??'─'}%　対有効前確OK率:${yzT??'─'}%\n${'─'.repeat(24)}\n`;
+    data.forEach(s=>{
+      const jr=pct(s.juchu,s.yuko);
+      txt+=`${s.name}　有効:${s.yuko} 受注:${s.juchu} 前確:${s.zen}　受注率:${jr??'─'}%\n`;
+    });
+    txt+=`${'─'.repeat(24)}\n`;
+    txt+=`🏆有効受注率　`;
+    rateRanking.slice(0,3).forEach((s,i)=>txt+=`${MEDALS[i]}${s.name}(${s.jr.toFixed(1)}%) `);
+    txt+=`\n🏆前確OK数　`;
+    zenRanking.slice(0,3).forEach((s,i)=>txt+=`${MEDALS[i]}${s.name}(${s.zen}件) `);
+
+    navigator.clipboard.writeText(txt).then(()=>{
+      const btn=document.getElementById('copyBtn');
+      btn.textContent='✅ コピーしました！';
+      setTimeout(()=>btn.textContent='📋 LINE用テキストをコピー',2000);
+    });
+  });
+</script>
+</body>
+</html>
